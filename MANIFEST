@@ -1,0 +1,8 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+lib/WWW/Salesforce.pm
+lib/WWW/Salesforce/Constants.pm
+t/WWW-Salesforce.t
+t/sfdc.cfg
