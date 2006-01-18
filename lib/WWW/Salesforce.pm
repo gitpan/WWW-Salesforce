@@ -6,9 +6,10 @@ package WWW::Salesforce;
     
     use SOAP::Lite;
     use WWW::Salesforce::Constants;
+    use WWW::Salesforce::Deserializer;
     use vars qw( $VERSION );
     
-    $VERSION = '0.01';
+    $VERSION = '0.02';
     
     our $errstr = '';
     
@@ -35,7 +36,7 @@ package WWW::Salesforce;
             sf_pass => $params{'password'},
             sf_sid => undef, #session ID
             sf_uri => 'urn:partner.soap.sforce.com',
-            sf_proxy => 'https://www.salesforce.com/services/Soap/u/4.0',
+            sf_proxy => 'https://www.salesforce.com/services/Soap/u/6.0',
             sf_prefix => 'sforce',
             sf_sobject_urn => 'urn:sobject.partner.soap.sforce.com',
         };
@@ -52,6 +53,24 @@ package WWW::Salesforce;
     sub convertLead {
         #todo -- create this function... use
         #http://www.sforce.com/us/resources/soap/sforce60/sforce_API_messages_convertLead.html
+        my $self = shift;
+        my (%in) = @_;
+
+        my $client = $self->get_client(1);
+
+        my $method = SOAP::Data
+            ->name( "convertLead" )
+            ->prefix( $self->{'sf_prefix'} )
+            ->uri( $self->{'sf_uri'} );
+
+        my $r = $client->call(
+            $method => SOAP::Data->prefix( $self->{'sf_prefix'} )
+                ->name( 'sObjectType' => $in{'type'} )
+                ->type( 'xsd:string' ), 
+            $self->get_session_header()
+        );
+
+        return $r;
     }
     
     #**************************************************************************
@@ -62,14 +81,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-            ->readable(1)
-            # TODO - create deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
 
         my $method = SOAP::Data
             ->name("create")
@@ -103,14 +115,7 @@ package WWW::Salesforce;
     sub delete {
         my $self = shift;
 
-        my $client = SOAP::Lite
-            ->readable(1)
-            # TODO - make Deserializer
-            #->deserializer( Salesforce::Deserializer->new )
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
 
         my $method = SOAP::Data
             ->name("delete")
@@ -137,14 +142,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
     
-        my $client = SOAP::Lite
-    	    ->readable(1)
-    	    ->deserializer( SOAP::Deserializer->new )
-    	    #TODO -> make our own deserializer
-    	    #->deserializer( WWW::Salesforce::Deserializer->new )
-    	    ->on_action( sub { return '""' } )
-    	    ->uri( $self->{'sf_uri'} )
-    	    ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
     
         my $method = SOAP::Data
     	    ->name("describeGlobal")
@@ -166,6 +164,24 @@ package WWW::Salesforce;
     sub describeLayout {
         # TODO - create function
         #http://www.sforce.com/us/resources/soap/sforce60/sforce_API_messages_describeLayout.html
+        my $self = shift;
+        my (%in) = @_;
+
+        my $client = $self->get_client(1);
+
+        my $method = SOAP::Data
+            ->name( "describeLayout" )
+            ->prefix( $self->{'sf_prefix'} )
+            ->uri( $self->{'sf_uri'} );
+
+        my $r = $client->call(
+            $method => SOAP::Data->prefix( $self->{'sf_prefix'} )
+                ->name( 'sObjectType' => $in{'type'} )
+                ->type( 'xsd:string' ), 
+            $self->get_session_header()
+        );
+
+        return $r;
     }
     
     #**************************************************************************
@@ -176,14 +192,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-            ->readable(1)
-            # TODO - create deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
 
         my $method = SOAP::Data
             ->name( "describeSObject" )
@@ -198,6 +207,29 @@ package WWW::Salesforce;
         );
 
         return $r;
+    }
+    
+    #**************************************************************************
+    # get_client( $readable )
+    #   -- gets the session header
+    #**************************************************************************
+    sub get_client {
+        my $self = shift;
+        my $readable = shift;
+        if ( defined $readable and $readable ) {
+            $readable = 1;
+        }
+        else {
+            $readable = 0;
+        }
+        
+        my $client = SOAP::Lite
+            ->readable($readable)
+            ->deserializer( WWW::Salesforce::Deserializer->new )
+            ->on_action( sub { return '""' } )
+            ->uri( $self->{'sf_uri'} )
+            ->proxy( $self->{'sf_proxy'} );
+        return $client;
     }
     
     #**************************************************************************
@@ -221,14 +253,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-            ->readable(1)
-            # TODO - create deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
 
         my $method = SOAP::Data
             ->name("getDeleted")
@@ -258,14 +283,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
     
-        my $client = SOAP::Lite
-            ->readable(1)
-            ->deserializer( SOAP::Deserializer->new )
-            # TODO Make deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'})
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
     
         my $method = SOAP::Data
             ->name( "getServerTimestamp" )
@@ -289,14 +307,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-            ->readable(1)
-            # TODO - create deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
 
         my $method = SOAP::Data
             ->name( "getUpdated" )
@@ -327,14 +338,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-            ->readable(1)
-            # TODO - create deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
 
         my $method = SOAP::Data
             ->name("getUserInfo")
@@ -359,13 +363,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-            ->deserializer( SOAP::Deserializer->new )
-    	    #TODO -> make our own deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client();
     
         my $r = $client->login(
             SOAP::Data->name( 'username' => $self->{'sf_user'} ),
@@ -394,13 +392,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-    	    #TODO -> make our own deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client();
 
         my $r = $client->query(
             $self->get_session_header(),
@@ -422,13 +414,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-    	    #TODO -> make our own deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client();
 
         my $r = $client->queryMore(
             $self->get_session_header(),
@@ -450,13 +436,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-    	    #TODO -> make our own deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
 
         my $method = SOAP::Data
             ->name( "resetPassword" )
@@ -481,13 +461,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-    	    #TODO -> make our own deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
 
         my $method = SOAP::Data
             ->name( "retrieve" )
@@ -528,13 +502,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-    	    #TODO -> make our own deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
 
         my $method = SOAP::Data
             ->name( "search" )
@@ -558,13 +526,7 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-    	    #TODO -> make our own deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
 
         my $method = SOAP::Data
             ->name( "setPassword" )
@@ -591,19 +553,13 @@ package WWW::Salesforce;
         my $self = shift;
         my (%in) = @_;
 
-        my $client = SOAP::Lite
-    	    #TODO -> make our own deserializer
-            #->deserializer(Salesforce::Deserializer->new)
-            ->deserializer( SOAP::Deserializer->new )
-            ->on_action( sub { return '""' } )
-            ->uri( $self->{'sf_uri'} )
-            ->proxy( $self->{'sf_proxy'} );
+        my $client = $self->get_client(1);
             
         my $method = SOAP::Data
             ->name("update")
             ->prefix( $self->{'sf_prefix'} )
             ->uri( $self->{'sf_uri'} )
-            ->attr( { 'xmlns:sfons' => 'urn:sobject.partner.soap.sforce.com' } );
+            ->attr( { 'xmlns:sfons' => $self->{'sf_object_urn'} } );
 
         my $type = $in{'type'};
         delete($in{'type'});
@@ -643,7 +599,7 @@ __END__
 =pod
 =head1 NAME
 
-WWW::Salesforce v0.01 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
+WWW::Salesforce v0.02 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
 
 =head1 SYNOPSIS
 
@@ -662,7 +618,8 @@ This class provides a simple abstraction layer between SOAP::Lite and Salesforce
 
 =item login( HASH )
 
-This method should not be called manually. it is handled on creation of a new WWW::Salesforce object.
+This method should *not* be called manually. it is handled on creation of a new WWW::Salesforce object.
+
 The C<login> method returns a 1 if the login attempt was successful, and 0 otherwise. Upon a successful login, the sessionId is saved and the serverUrl set properly so that developers need not worry about setting these values manually.
 
 The following are the accepted input parameters:
@@ -797,6 +754,18 @@ The type of the object you wish to have described.
 
 =back
 
+=item describeLayout( HASH )
+
+Describes metadata about a given page layout, including layouts for edit and display-only views and record type mappings.
+
+=over
+
+=item type
+
+The type of the object you wish to have described.
+
+=back
+
 =item describeGlobal()
 
 Retrieves a list of available objects for your organization's data.
@@ -878,6 +847,20 @@ The search string to be used in the query. For example, "find {4159017000} in ph
 Please visit Salesforce.com's user/developer forums online for assistance with
 this module. You are free to contact the author directly if you are unable to
 resolve your issue online.
+
+=head1 CHANGE HISTORY
+
+=head2 2006-01-18  v0.02
+    -added the deserializer.
+    -added describeLayout() API call
+    -removed code found in every API call and made a single function for it. updates in one place now instead of many
+    -added another test case to the install
+    -fixed some documentation.
+    -using API version 6 instead of version 4 from Salesforce
+    
+=head2 2006-01-17  v0.01
+    -re-wrote the module to be more easily subclassed
+    -released to CPAN
 
 =head1 AUTHORS
 

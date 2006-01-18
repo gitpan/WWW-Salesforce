@@ -1,11 +1,11 @@
-WWW-Salesforce version 0.01
+WWW-Salesforce version 0.02
 ===========================
 
 #
 # Salesforce dot com Perl Module
 # Author: Byrne Reese <byrne at majordojo dot com>
 #           Chase Whitener <cwhitener at gmail dot com>
-# Last Updated - Jan 17, 2006
+# Last Updated - Jan 18, 2006
 #
 
 The following Perl module is to facilitate communication with the
@@ -44,9 +44,11 @@ This module requires these other modules and libraries:
 
 WHAT WORKS
 
-All 4.0 API calls now work.
+Almost all 6.0 API calls now work.
 
 WHAT DOESN'T WORK (a.k.a. TO DO)
+
+* create a convertLead method to access the 6.0 API function
 
 * make login call an automatic one if the sessionId has not been
   provided - in other words, check first to see if user has set

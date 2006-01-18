@@ -11,7 +11,7 @@ use SOAP::Lite;
 use vars qw($user $pass);
 require 't/sfdc.cfg';
 
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 #test 1, can we find the module?
 BEGIN { use_ok('WWW::Salesforce') };
@@ -31,8 +31,12 @@ ok( ($sforce)? 1 : 0 );
 
 #test 3, get server time
 $res = $sforce->getServerTimestamp();
-my $val = $res->valueof( '//getServerTimestampResponse/result/timestamp' );
-ok( (defined $val)? 1 : 0 );
+if ( !$res->fault() and defined $res->valueof('//getServerTimestampResponse/result/timestamp') ) {
+    ok(1);
+}
+else {
+    ok(0);
+}
 
 #test 4, get describeGlobal
 $res = $sforce->describeGlobal();
@@ -77,6 +81,15 @@ else {
 #test 8, describeSObject
 $res = $sforce->describeSObject( 'type' => 'Account' );
 if ( !$res->fault() and defined $res->valueof('//describeSObjectResponse/result/fields') ) {
+    ok(1);
+}
+else {
+    ok(0);
+}
+
+#test 9, describeLayout
+$res = $sforce->describeLayout( 'type' => 'Account' );
+if ( !$res->fault() and defined $res->valueof('//describeLayoutResponse/result/layouts') ) {
     ok(1);
 }
 else {
