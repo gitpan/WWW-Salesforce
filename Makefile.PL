@@ -1,4 +1,4 @@
-use 5.008007;
+use 5.008001;
 use ExtUtils::MakeMaker;
 
 my $SFDC_CONFIG_FILE = "t/sfdc.cfg";

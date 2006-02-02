@@ -1,5 +1,15 @@
 Revision history for Perl extension WWW::Salesforce.
 
+0.04  Thurs Feb 2 15:48:00 2006
+    - fixed a problem in the documentation
+
+0.04  Thurs Feb 2 15:00:00 2006
+    - fixed a directory quirk due to shared FAT partition work was stored on
+
+0.03  Thurs Feb 2 14:56:00 2006
+    - Changed the required version of perl to work with Perl 5.8.0 and greater
+    - fixed some documentation
+
 0.02  Wed Jan 18 12:19:00 2006
     - Added deserializer
     - fixed some documentation

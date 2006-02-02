@@ -1,6 +1,6 @@
 package WWW::Salesforce;
 {
-    use 5.008007;
+    use 5.008001;
     use strict;
     use warnings;
     
@@ -9,7 +9,7 @@ package WWW::Salesforce;
     use WWW::Salesforce::Deserializer;
     use vars qw( $VERSION );
     
-    $VERSION = '0.02';
+    $VERSION = '0.05';
     
     our $errstr = '';
     
@@ -599,7 +599,7 @@ __END__
 =pod
 =head1 NAME
 
-WWW::Salesforce v0.02 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
+WWW::Salesforce v0.05 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
 
 =head1 SYNOPSIS
 
@@ -847,20 +847,6 @@ The search string to be used in the query. For example, "find {4159017000} in ph
 Please visit Salesforce.com's user/developer forums online for assistance with
 this module. You are free to contact the author directly if you are unable to
 resolve your issue online.
-
-=head1 CHANGE HISTORY
-
-=head2 2006-01-18  v0.02
-    -added the deserializer.
-    -added describeLayout() API call
-    -removed code found in every API call and made a single function for it. updates in one place now instead of many
-    -added another test case to the install
-    -fixed some documentation.
-    -using API version 6 instead of version 4 from Salesforce
-    
-=head2 2006-01-17  v0.01
-    -re-wrote the module to be more easily subclassed
-    -released to CPAN
 
 =head1 AUTHORS
 

@@ -4,5 +4,6 @@ MANIFEST
 README
 lib/WWW/Salesforce.pm
 lib/WWW/Salesforce/Constants.pm
+lib/WWW/Salesforce/Deserializer.pm
 t/WWW-Salesforce.t
 t/sfdc.cfg
