@@ -9,7 +9,7 @@ package WWW::Salesforce;
     use WWW::Salesforce::Deserializer;
     use vars qw( $VERSION );
     
-    $VERSION = '0.05';
+    $VERSION = '0.06';
     
     our $errstr = '';
     
@@ -109,8 +109,8 @@ package WWW::Salesforce;
     }
 
     #**************************************************************************
-    # describeGlobal()     -- API
-    #   -- TODO: add description
+    # delete()     -- API
+    #   -- handles deleting items from TeamTrack
     #**************************************************************************
     sub delete {
         my $self = shift;
@@ -120,7 +120,7 @@ package WWW::Salesforce;
         my $method = SOAP::Data
             ->name("delete")
             ->prefix( $self->{'sf_prefix'} )
-            ->uri( $self->{'sf_proxy'} );
+            ->uri( $self->{'sf_uri'} );
 
         my @elems;
         foreach my $id ( @_ ) {
@@ -599,7 +599,7 @@ __END__
 =pod
 =head1 NAME
 
-WWW::Salesforce v0.05 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
+WWW::Salesforce v0.06 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
 
 =head1 SYNOPSIS
 

@@ -1,4 +1,6 @@
 Revision history for Perl extension WWW::Salesforce.
+0.06  Fri March 31 14:27:00 2006
+    - implemented a bug fix for the delete function
 
 0.04  Thurs Feb 2 15:48:00 2006
     - fixed a problem in the documentation
