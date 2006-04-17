@@ -9,7 +9,7 @@ package WWW::Salesforce;
     use WWW::Salesforce::Deserializer;
     use vars qw( $VERSION );
     
-    $VERSION = '0.06';
+    $VERSION = '0.07';
     
     our $errstr = '';
     
@@ -599,7 +599,7 @@ __END__
 =pod
 =head1 NAME
 
-WWW::Salesforce v0.06 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
+WWW::Salesforce v0.07 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
 
 =head1 SYNOPSIS
 

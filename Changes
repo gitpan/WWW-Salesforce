@@ -1,4 +1,8 @@
 Revision history for Perl extension WWW::Salesforce.
+
+0.07  Mon April 17 17:45:00 2006
+    - Implemented addition to Constants.pm provided by Jun Shimizu. Thanks, Jun
+    
 0.06  Fri March 31 14:27:00 2006
     - implemented a bug fix for the delete function
 
