@@ -1,8 +1,18 @@
 Revision history for Perl extension WWW::Salesforce.
 
+0.08  Thurs Aug 3 11:17:00 2006
+    - Reworked to work with API version 7.0 from salesforce.
+    - Added WWW::Salesforce::Serializer
+    - Deprecated new() call, use login() instead
+    - Got rid of $errstr static variable in favor of Carp
+    - All functions now either return a SOAP::SOM object or 0 upon error
+    - All errors are stored in $!
+    - More error handling inside the module
+    - Moved WWW::Salesforce::Simple into this build
+
 0.07  Mon April 17 17:45:00 2006
     - Implemented addition to Constants.pm provided by Jun Shimizu. Thanks, Jun
-    
+
 0.06  Fri March 31 14:27:00 2006
     - implemented a bug fix for the delete function
 
@@ -22,8 +32,8 @@ Revision history for Perl extension WWW::Salesforce.
     - changed to use API version 6.0 instead of 4.0
     - Added describeLayout method
     - Added a test case
-    
+
 0.01  Tue Jan 17 10:34:55 2006
-	- original version; created by h2xs 1.23 with options
-		-X -n WWW::Salesforce
+    - original version; created by h2xs 1.23 with options
+        -X -n WWW::Salesforce
 

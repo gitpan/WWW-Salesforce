@@ -23,27 +23,33 @@ BEGIN { use_ok('WWW::Salesforce') };
 
 my $res;
 
-
 #test 2, new object/connection...
-my $sforce = WWW::Salesforce->new( 'username' => $user,'password' => $pass );
-ok( ($sforce)? 1 : 0 );
-
-
-#test 3, get server time
-$res = $sforce->getServerTimestamp();
-if ( !$res->fault() and defined $res->valueof('//getServerTimestampResponse/result/timestamp') ) {
+my $sforce = WWW::Salesforce->login( 'username' => $user,'password' => $pass );
+if ( $sforce ) {
     ok(1);
 }
 else {
+    print "$!\n";
+    ok(0);
+}
+
+#test 3, get server time
+$res = $sforce->getServerTimestamp();
+if ( $res ) {
+    ok(1);
+}
+else {
+    print "$!\n";
     ok(0);
 }
 
 #test 4, get describeGlobal
 $res = $sforce->describeGlobal();
-if ( !$res->fault() and defined $res->valueof('//describeGlobalResponse/result/types') ) {
+if ( $res ) {
     ok(1);
 }
 else {
+    print "$!\n";
     ok(0);
 }
 
@@ -52,46 +58,51 @@ $res = $sforce->query(
     'query' => 'select id, firstname, lastname from lead',
     'limit' => 5
 );
-if ( !$res->fault() and defined $res->valueof('//queryResponse/result/records') ) {
+if ( $res ) {
     ok(1);
 }
 else {
+    print "$!\n";
     ok(0);
 }
 
 #test 6, queryMore
 my $locator = $res->valueof('//queryResponse/result/queryLocator');
 $res = $sforce->queryMore('queryLocator' => $locator,'limit' => 5);
-if ( !$res->fault() and defined $res->valueof('//queryMoreResponse/result/records') ) {
+if ( $res ) {
     ok(1);
 }
 else {
+    print "$!\n";
     ok(0);
 }
 
 #test 7, getUserinfo
 $res = $sforce->getUserInfo();
-if ( !$res->fault() and defined $res->valueof('//getUserInfoResponse/result') ) {
+if ( $res ) {
     ok(1);
 }
 else {
+    print "$!\n";
     ok(0);
 }
 
 #test 8, describeSObject
 $res = $sforce->describeSObject( 'type' => 'Account' );
-if ( !$res->fault() and defined $res->valueof('//describeSObjectResponse/result/fields') ) {
+if ( $res ) {
     ok(1);
 }
 else {
+    print "$!\n";
     ok(0);
 }
 
 #test 9, describeLayout
 $res = $sforce->describeLayout( 'type' => 'Account' );
-if ( !$res->fault() and defined $res->valueof('//describeLayoutResponse/result/layouts') ) {
+if ( $res ) {
     ok(1);
 }
 else {
+    print "$!\n";
     ok(0);
 }

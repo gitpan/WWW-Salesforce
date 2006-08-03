@@ -5,7 +5,7 @@ package WWW::Salesforce;
     use warnings;
     use Carp;
 
-    use SOAP::Lite;# ( +trace => 'all', readable => 1, );#, outputxml => 1, );
+    use SOAP::Lite ( +trace => 'all', readable => 1, );#, outputxml => 1, );
     use Data::Dumper;
     use WWW::Salesforce::Constants;
     use WWW::Salesforce::Deserializer;

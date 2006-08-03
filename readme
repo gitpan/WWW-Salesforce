@@ -1,11 +1,11 @@
-WWW-Salesforce version 0.07
+WWW-Salesforce version 0.08
 ===========================
 
 #
 # Salesforce dot com Perl Module
 # Author: Byrne Reese <byrne at majordojo dot com>
 #           Chase Whitener <cwhitener at gmail dot com>
-# Last Updated - Jan 18, 2006
+# Last Updated - Aug 2, 2006
 #
 
 The following Perl module is to facilitate communication with the
@@ -23,8 +23,7 @@ This Perl module was originally provided and presented as part of
 the first Salesforce.com dreamForce conference on Nov. 11, 2003 in
 San Francisco.
 
-It has been maintained by the original author and sforce developers
-ever since.
+It is now being maintained by Chase Whitener.
 
 INSTALLATION
 
@@ -44,30 +43,17 @@ This module requires these other modules and libraries:
 
 WHAT WORKS
 
-Almost all 6.0 API calls now work.
+Almost all 7.0 API calls now work.
 
 WHAT DOESN'T WORK (a.k.a. TO DO)
 
-* create a convertLead method to access the 6.0 API function
+* describeSObjects API call. - array version of describeSObject
 
-* make login call an automatic one if the sessionId has not been
-  provided - in other words, check first to see if user has set
-  the sessionId, and if not, call login to fetch one. Otherwise,
-  just use the provided one in the Session header.
+* describeTabs API call.
 
-* The TYPES global variable only dexcribes the Account datatype.
-  Certain functions (like update and create) will require this
-  hashmap to be updated with additional types, and their
-  respective element data types.
+* the batchSize limitation in query() and queryMore()
 
 ABOUT THE AUTHOR
-
-Byrne Reese is the Lead Developer of the SOAP::Lite project. He is
-the author of many articles online about Perl and Web Services, a
-teacher for UC Berkeley Extension, and the maintainer of a blog 
-dedicated to SOAP::Lite development:
-
-   http://majordojo.com/soaplite/
 
 Chase Whitener took on making a few changes to the Module because he
 now has to work with Salesforce.com at his current position.
