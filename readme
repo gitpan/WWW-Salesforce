@@ -1,11 +1,11 @@
-WWW-Salesforce version 0.08
-===========================
+WWW-Salesforce version 0.081
+============================
 
 #
 # Salesforce dot com Perl Module
 # Author: Byrne Reese <byrne at majordojo dot com>
 #           Chase Whitener <cwhitener at gmail dot com>
-# Last Updated - Aug 2, 2006
+# Last Updated - Oct 29, 2006
 #
 
 The following Perl module is to facilitate communication with the
@@ -52,6 +52,8 @@ WHAT DOESN'T WORK (a.k.a. TO DO)
 * describeTabs API call.
 
 * the batchSize limitation in query() and queryMore()
+
+* need to add more tests
 
 ABOUT THE AUTHOR
 

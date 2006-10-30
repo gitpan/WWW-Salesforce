@@ -15,7 +15,7 @@ package WWW::Salesforce;
         $VERSION $SF_URI $SF_PREFIX $SF_PROXY $SF_SOBJECT_URI
     );
 
-    $VERSION = '0.08';
+    $VERSION = '0.081';
 
     $SF_PROXY = 'https://www.salesforce.com/services/Soap/u/7.0';
     $SF_URI = 'urn:partner.soap.sforce.com';
@@ -764,7 +764,7 @@ __END__
 =pod
 =head1 NAME
 
-WWW::Salesforce v0.08 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
+WWW::Salesforce v0.081 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
 
 =head1 SYNOPSIS
 
@@ -1038,8 +1038,7 @@ resolve your issue online.
 The C<describeSObjects> and C<describeTabs> API calls are not yet complete. These will be 
 completed in future releases.
 
-The C<query> and C<queryMore> results limits are not working properly. I am working with
-Salesforce.com on this issue.
+Not enough test cases built into the install yet.  More to be added.
 
 =head1 SEE ALSO
 
@@ -1054,6 +1053,9 @@ Salesforce.com on this issue.
 Chase Whitener <cwhitener at gmail dot com>
 
 Thanks to:
+
+Tony Stubblebine -
+Finding a bug and providing a fix.
 
 Jun Shimizu - 
 Providing more to the WWW::Salesforce::Constants module

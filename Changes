@@ -1,5 +1,10 @@
 Revision history for Perl extension WWW::Salesforce.
 
+0.081 Mon Oct 29 10:00:00 2006
+    - fixed a few small bugs reported with WWW::Salesforce::Simple
+        - Thanks to Tony Stubblebine (tony at tonystubblebine dot com) for pointing out
+            the errors and providing a fix.
+
 0.08  Thurs Aug 3 11:17:00 2006
     - Reworked to work with API version 7.0 from salesforce.
     - Added WWW::Salesforce::Serializer

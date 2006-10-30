@@ -8,7 +8,7 @@ package WWW::Salesforce::Simple;
 
     #handle versioning and exporting
     use vars qw( $VERSION @ISA );
-    $VERSION = '0.091';
+    $VERSION = '0.092';
     @ISA = qw( WWW::Salesforce );
 
     #**************************************************************************
@@ -28,7 +28,7 @@ package WWW::Salesforce::Simple;
     sub do_query {
         my ( $self, $query, $limit ) = @_;
 
-        if ( !defined $query || $query =~ m/^select/i ) {
+        if ( !defined $query || $query !~ m/^select/i ) {
             carp( 'Param1 of do_query() should be a string SQL query' );
             return 0;
         }
@@ -79,7 +79,7 @@ package WWW::Salesforce::Simple;
     sub get_field_list {
         my ( $self, $table_name ) = @_;
 
-        if ( !defiend $table_name || !length $table_name ) {
+        if ( !defined $table_name || !length $table_name ) {
             carp( 'Param1 of get_field_list() should be a string' );
             return 0;
         }
@@ -119,7 +119,7 @@ package WWW::Salesforce::Simple;
 
 =head1 NAME
 
-WWW::Salesforce::Simple.pm v0.091 - this class provides a simpler abstraction layer between WWW::Salesforce and Salesforce.com.
+WWW::Salesforce::Simple.pm v0.092 - this class provides a simpler abstraction layer between WWW::Salesforce and Salesforce.com.
 
 =head1 DESCRIPTION
 
