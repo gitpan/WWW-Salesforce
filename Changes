@@ -1,5 +1,11 @@
 Revision history for Perl extension WWW::Salesforce.
 
+0.082 Mon Feb 12 17:00:00 2007
+    - updated to work with v8.0 of the API
+    - A lot of test cases added
+        - Thanks to Ron Hess (rhess at salesforce dot com) for fixing some things in the
+            module, adding many test cases and providing a lot of other help.
+
 0.081 Mon Oct 29 10:00:00 2006
     - fixed a few small bugs reported with WWW::Salesforce::Simple
         - Thanks to Tony Stubblebine (tony at tonystubblebine dot com) for pointing out

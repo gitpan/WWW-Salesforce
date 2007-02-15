@@ -4,12 +4,11 @@ package WWW::Salesforce::Simple;
     use strict;
     use warnings;
     use Carp;
-    use WWW::Salesforce;
+    use base 'WWW::Salesforce';
 
     #handle versioning and exporting
-    use vars qw( $VERSION @ISA );
-    $VERSION = '0.092';
-    @ISA = qw( WWW::Salesforce );
+    use vars qw( $VERSION );
+    $VERSION = '0.093';
 
     #**************************************************************************
     # new( %params ) ------CONSTRUCTOR

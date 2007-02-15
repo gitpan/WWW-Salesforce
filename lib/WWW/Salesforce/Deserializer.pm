@@ -33,13 +33,13 @@ package WWW::Salesforce::Deserializer;
         no strict 'refs';
         for my $class ( qw(LoginResult) ) {
             my $method_name = "as_".$class;
-            my $class_name = "Salesforce::".$class;
+            my $class_name = "WWW::Salesforce::".$class;
             my $method_body = <<END_OF_SUB;
             
             sub $method_name {
                 my (\$self,\$f,\$name,\$attr) = splice(\@_,0,4);
                 my \$ns = pop;
-                my \$${class} = Salesforce::${class}->new;
+                my \$${class} = WWW::Salesforce::${class}->new;
                 foreach my \$elem (\@_) {
                     \$elem = shift \@\$elem if (ref(\$elem->[0]) eq 'ARRAY');
                     my (\$name2, \$attr2, \$value2, \$ns2) = splice(\@{\$elem},0,4);

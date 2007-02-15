@@ -15,9 +15,9 @@ package WWW::Salesforce;
         $VERSION $SF_URI $SF_PREFIX $SF_PROXY $SF_SOBJECT_URI
     );
 
-    $VERSION = '0.081';
+    $VERSION = '0.082';
 
-    $SF_PROXY = 'https://www.salesforce.com/services/Soap/u/7.0';
+    $SF_PROXY = 'https://www.salesforce.com/services/Soap/u/8.0';
     $SF_URI = 'urn:partner.soap.sforce.com';
     $SF_PREFIX = 'sforce';
     $SF_SOBJECT_URI = 'urn:sobject.partner.soap.sforce.com';
@@ -63,7 +63,7 @@ package WWW::Salesforce;
             return 0;
         }
         #got the data lined up, make the call
-        my $client = get_client( 1 );
+        my $client = $self->get_client( 1 );
         my $r = $client->convertLead(
             SOAP::Data
                 ->name( "leadConverts" => \SOAP::Data->value( @data ) ),
@@ -88,7 +88,7 @@ package WWW::Salesforce;
             carp( "Expected a hash of arrays." );
             return 0;
         }
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name("create")
             ->prefix( $SF_PREFIX )
@@ -125,7 +125,7 @@ package WWW::Salesforce;
     sub delete {
         my $self = shift;
 
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name("delete")
             ->prefix( $SF_PREFIX )
@@ -159,7 +159,7 @@ package WWW::Salesforce;
     sub describeGlobal {
         my $self = shift;
 
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name("describeGlobal")
             ->prefix( $SF_PREFIX )
@@ -189,7 +189,7 @@ package WWW::Salesforce;
             carp( "Expected hash with key 'type'" );
             return 0;
         }
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name( "describeLayout" )
             ->prefix( $SF_PREFIX )
@@ -221,7 +221,7 @@ package WWW::Salesforce;
             return 0;
         }
 
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name( "describeSObject" )
             ->prefix( $SF_PREFIX )
@@ -260,10 +260,22 @@ package WWW::Salesforce;
     #       of tabs defined for each app.
     #**************************************************************************
     sub describeTabs {
-        # TODO: new to v7.0
-        warn( "not done yet" );
-        carp( "This is on the todo list" );
-        return 0;
+        my $self = shift;
+        my $client = $self->get_client(1);
+        my $method = SOAP::Data
+            ->name( "describeTabs" )
+            ->prefix( $SF_PREFIX )
+            ->uri( $SF_URI );
+
+        my $r = $client->call(
+            $method, 
+            $self->get_session_header()
+        );
+        if ( $r->fault() ) {
+            carp( $r->faultstring() );
+            return 0;
+        }
+        return $r;
     }
 
     #**************************************************************************
@@ -271,6 +283,7 @@ package WWW::Salesforce;
     #   -- get a client
     #**************************************************************************
     sub get_client {
+        my $self = shift;
         my ( $readable ) = @_;
         $readable = ( $readable )? 1 : 0;
 
@@ -280,7 +293,8 @@ package WWW::Salesforce;
             ->serializer( WWW::Salesforce::Serializer->new )
             ->on_action( sub { return '""' } )
             ->uri( $SF_URI )
-            ->proxy( $SF_PROXY );
+            ->multirefinplace(1)
+            ->proxy( $self->{'sf_serverurl'} );
         return $client;
     }
 
@@ -322,7 +336,7 @@ package WWW::Salesforce;
             return 0;
         }
 
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name("getDeleted")
             ->prefix( $SF_PREFIX )
@@ -352,7 +366,7 @@ package WWW::Salesforce;
     #**************************************************************************
     sub getServerTimestamp {
         my $self = shift;
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $r = $client->getServerTimestamp( $self->get_session_header() );
         if ( $r->fault() ) {
             carp( $r->faultstring() );
@@ -384,7 +398,7 @@ package WWW::Salesforce;
             return 0;
         }
 
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name( "getUpdated" )
             ->prefix( $SF_PREFIX )
@@ -415,7 +429,7 @@ package WWW::Salesforce;
     #**************************************************************************
     sub getUserInfo {
         my $self = shift;
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $r = $client->getUserInfo( $self->get_session_header() );
         if ( $r->fault() ) {
             carp( $r->faultstring() );
@@ -443,10 +457,14 @@ package WWW::Salesforce;
         my $self = {
             sf_user => $params{'username'},
             sf_pass => $params{'password'},
+            sf_serverurl => $SF_PROXY,
             sf_sid => undef, #session ID
         };
+        $self->{'sf_serverurl'} = $params{'serverurl'}
+            if ( $params{'serverurl'} && length( $params{'serverurl'} ) );
+        bless $self, $class;
 
-        my $client = get_client();
+        my $client = $self->get_client();
         my $r = $client->login(
             SOAP::Data->name( 'username' => $self->{'sf_user'} ),
             SOAP::Data->name( 'password' => $self->{'sf_pass'} )
@@ -458,8 +476,8 @@ package WWW::Salesforce;
 
         $self->{'sf_sid'} = $r->valueof('//loginResponse/result/sessionId');
         $self->{'sf_uid'} = $r->valueof('//loginResponse/result/userId');
-        $SF_PROXY = $r->valueof('//loginResponse/result/serverUrl');
-        bless $self, $class;
+        $self->{'sf_serverurl'} = $r->valueof('//loginResponse/result/serverUrl');
+
         return $self;
     }
 
@@ -490,7 +508,7 @@ package WWW::Salesforce;
             )
             ->prefix( $SF_PREFIX )
             ->uri( $SF_URI );
-        my $client = get_client(1);
+        my $client = $self->get_client();
         my $r = $client->query(
             SOAP::Data->name( 'queryString' => $in{'query'} ),
             $limit,
@@ -529,7 +547,7 @@ package WWW::Salesforce;
             )
             ->prefix( $SF_PREFIX )
             ->uri( $SF_URI );
-        my $client = get_client();
+        my $client = $self->get_client();
         my $r = $client->queryMore(
             SOAP::Data->name( 'queryLocator' => $in{'queryLocator'} ),
             $limit,
@@ -555,7 +573,7 @@ package WWW::Salesforce;
             return 0;
         }
 
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name( "resetPassword" )
             ->prefix( $SF_PREFIX )
@@ -602,7 +620,7 @@ package WWW::Salesforce;
         }
 
         my @elems;
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name( "retrieve" )
             ->prefix( $SF_PREFIX )
@@ -646,7 +664,7 @@ package WWW::Salesforce;
             carp( "Expected hash with key 'searchString'" );
             return 0;
         }
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name( "search" )
             ->prefix( $SF_PREFIX )
@@ -681,7 +699,7 @@ package WWW::Salesforce;
             return 0;
         }
 
-        my $client = get_client(1);
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name( "setPassword" )
             ->prefix( $SF_PREFIX )
@@ -708,46 +726,57 @@ package WWW::Salesforce;
     #**************************************************************************
     sub update {
         my $self = shift;
-        my (%in) = @_;
-
-        my $type = $in{'type'};
-        delete($in{'type'});
-        my $id = $in{'id'};
-        delete($in{'id'});
-        if ( !$type ) {
-            carp( "Expected a hash with key 'type'" );
+        
+        my ($spec,$type) = splice @_,0,2;
+        if ( $spec ne 'type' || !$type ) {
+            carp( "Expected a hash with key 'type' as first argument" );
             return 0;
         }
-        if ( !$id ) {
-            carp( "Expected a hash with key 'id'" );
-            return 0;
+        
+        my %tmp = ();
+        my @sobjects = @_;
+        if (ref $sobjects[0] ne 'HASH') { 
+        	%tmp = @_;
+        	@sobjects = (\%tmp);  # create an array of one
         }
 
-        my @elems;
-        push @elems,
-            SOAP::Data
-                ->prefix( $SF_PREFIX )
-                ->name( 'Id' => $id )
-                ->type( 'sforce:ID' );
-        foreach my $key (keys %in) {
-            push @elems,
-                SOAP::Data
-                    ->prefix( $SF_PREFIX )
-                    ->name( $key => $in{$key} )
-                    ->type( $WWW::Salesforce::Constants::TYPES{$type}->{$key} );
+        my @updates; 
+        foreach ( @sobjects ) {  # arg list is now an array of hash refs
+        	my %in = %{$_}; 
+        	        
+	        my $id = $in{'id'};
+	        delete($in{'id'});
+	        if ( !$id ) {
+	            carp( "Expected a hash with key 'id'" );
+	            return 0;
+	        }
+        
+	        my @elems;
+	        push @elems,
+	            SOAP::Data
+	                ->prefix( $SF_PREFIX )
+	                ->name( 'Id' => $id )
+	                ->type( 'sforce:ID' );
+	        foreach my $key (keys %in) {
+	            push @elems,
+	                SOAP::Data
+	                    ->prefix( $SF_PREFIX )
+	                    ->name( $key => $in{$key} )
+	                    ->type( $WWW::Salesforce::Constants::TYPES{$type}->{$key} );
+	        }
+	        push @updates, SOAP::Data 
+	        	->name('sObjects' => \SOAP::Data->value(@elems))
+		  		->attr( { 'xsi:type' => 'sforce:'.$type } ); 			
         }
-
-        my $client = get_client(1);
+        
+        my $client = $self->get_client(1);
         my $method = SOAP::Data
             ->name("update")
             ->prefix( $SF_PREFIX )
             ->uri( $SF_URI )
             ->attr( { 'xmlns:sfons' => $SF_SOBJECT_URI } );
         my $r = $client->call(
-            $method => SOAP::Data
-                ->name( 'sObjects' => \SOAP::Data->value( @elems ) )
-                ->attr( { 'xsi:type' => 'sforce:'.$type } ),
-            $self->get_session_header()
+            $method => $self->get_session_header(), @updates
         );
         if ( $r->fault() ) {
             carp( $r->faultstring() );
@@ -764,7 +793,7 @@ __END__
 =pod
 =head1 NAME
 
-WWW::Salesforce v0.081 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
+WWW::Salesforce v0.082 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
 
 =head1 SYNOPSIS
 
@@ -1054,6 +1083,10 @@ Chase Whitener <cwhitener at gmail dot com>
 
 Thanks to:
 
+Ron Hess -
+Finding and fixing bugs. Adding some additional features. Adding more tests
+to the build. Providing a lot of other help.
+
 Tony Stubblebine -
 Finding a bug and providing a fix.
 
@@ -1068,3 +1101,4 @@ Byrne Reese wrote the original Salesforce module.
 
 Copyright 2003-2004 Byrne Reese, Chase Whitener. All rights reserved.
 =cut
+
