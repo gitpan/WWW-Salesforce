@@ -30,5 +30,8 @@ close(CFGFILE);
 WriteMakefile(
     NAME              => 'WWW::Salesforce',
     VERSION_FROM      => 'lib/WWW/Salesforce.pm', # finds $VERSION
-    PREREQ_PM         => { 'SOAP::Lite' => 0.68 }, # e.g., Module::Name => 1.1
+    PREREQ_PM         => {
+        'Crypt::SSLeay' => 0.56,
+        'SOAP::Lite'    => 0.68,
+    }, # e.g., Module::Name => 1.1
 );

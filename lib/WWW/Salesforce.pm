@@ -15,7 +15,7 @@ package WWW::Salesforce;
         $VERSION $SF_URI $SF_PREFIX $SF_PROXY $SF_SOBJECT_URI
     );
 
-    $VERSION = '0.082';
+    $VERSION = '0.090';
 
     $SF_PROXY = 'https://www.salesforce.com/services/Soap/u/8.0';
     $SF_URI = 'urn:partner.soap.sforce.com';
@@ -102,7 +102,8 @@ package WWW::Salesforce;
         foreach my $key (keys %in) {
             push @elems, SOAP::Data->prefix('sfons')
                 ->name($key => $in{$key})
-                ->type($WWW::Salesforce::Constants::TYPES{$type}->{$key});
+                ->type( WWW::Salesforce::Constants->type($type, $key) );
+#                ->type($WWW::Salesforce::Constants::TYPES{$type}->{$key});
         }
 
         my $r = $client->call(
@@ -762,7 +763,8 @@ package WWW::Salesforce;
 	                SOAP::Data
 	                    ->prefix( $SF_PREFIX )
 	                    ->name( $key => $in{$key} )
-	                    ->type( $WWW::Salesforce::Constants::TYPES{$type}->{$key} );
+                        ->type( WWW::Salesforce::Constants->type($type, $key) );
+	                    #->type( $WWW::Salesforce::Constants::TYPES{$type}->{$key} );
 	        }
 	        push @updates, SOAP::Data 
 	        	->name('sObjects' => \SOAP::Data->value(@elems))
@@ -784,6 +786,69 @@ package WWW::Salesforce;
         }
         return $r;
     }
+
+    #**************************************************************************
+    # upsert()  --API
+    #   -- Creates new objects and updates existing objects;
+    #      uses a custom field to determine the presence of existing objects.
+    #**************************************************************************
+    sub upsert {
+        my $self = shift;
+        my ($spec, $type, $extern, $name, @sobjects) = @_;
+
+        if ($spec ne 'type' || !$type) {
+            carp( "Expected a hash with key 'type' as first argument" );
+            return 0;
+        }
+
+        # Default to the 'id' field
+        $name ||= 'id';
+
+        my %tmp = ();
+        if (ref $sobjects[0] ne 'HASH') {
+        	%tmp = @_;
+        	@sobjects = (\%tmp);  # create an array of one
+        }
+
+        my @updates = (
+             SOAP::Data
+	           ->prefix( $SF_PREFIX )
+               ->name('externalIDFieldName' => $name)
+               ->attr({'xsi:type' => 'xsd:string'})
+        );
+
+        foreach (@sobjects) {  # arg list is now an array of hash refs
+        	my %in = %{$_};
+
+	        my @elems;
+	        foreach my $key (keys %in) {
+	            push @elems,
+	                SOAP::Data    
+	                    ->prefix( $SF_PREFIX )
+	                    ->name( $key => $in{$key} )
+	                    ->type( WWW::Salesforce::Constants->type($type, $key) );
+	        }
+	        push @updates, SOAP::Data
+	        	->name('sObjects' => \SOAP::Data->value(@elems))
+		  		->attr( { 'xsi:type' => 'sforce:'.$type } );
+        }
+
+        my $client = $self->get_client(1);
+        my $method = SOAP::Data
+            ->name("upsert")
+            ->prefix( $SF_PREFIX )
+            ->uri( $SF_URI )
+            ->attr( { 'xmlns:sfons' => $SF_SOBJECT_URI } );
+        my $r = $client->call(
+            $method => $self->get_session_header(), @updates
+        );
+        if ( $r->fault() ) {
+            carp( $r->faultstring() );
+            return 0;
+        }
+        return $r;
+    }
+
 } #end of package scope
 
 #magically delicious
@@ -793,7 +858,7 @@ __END__
 =pod
 =head1 NAME
 
-WWW::Salesforce v0.082 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
+WWW::Salesforce v0.090 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
 
 =head1 SYNOPSIS
 
@@ -844,8 +909,7 @@ The following are the accepted input parameters:
 
 =item create( HASH )
 
-Adds one or more new individual objects to your organization's data. This takes as input a HASH containing the fields (the keys of the hash) and the values of the record you wish to add to your arganization.
-
+Adds one new individual objects to your organization's data. This takes as input a HASH containing the fields (the keys of the hash) and the values of the record you wish to add to your arganization.
 The hash must contain the 'Type' key in order to identify the type of the record to add.
 
 =over
@@ -892,11 +956,19 @@ This sets the batch size, or size of the result returned. This is helpful in pro
 
 =back
 
-=item update( HASH )
+=item update(type => $type, HASHREF [, HASHREF ...])
 
-Updates one or more existing objects in your organization's data. This subroutine takes as input a single perl HASH containing the fields (the keys of the hash) and the values of the record that will be updated.
+Updates one or more existing objects in your organization's data. This subroutine takes as input a B<type> value which names the type of object to update (e.g. Account, User) and one or more perl HASH references containing the fields (the keys of the hash) and the values of the record that will be updated.
 
 The hash must contain the 'Id' key in order to identify the record to update.
+
+=item upsert(type => $type, key => $key, HASHREF [, HASHREF ...])
+
+Updates or inserts one or more objects in your organization's data.  If the data doesn't exist on Salesforce, it will be inserted.  If it already exists it will be updated.
+
+This subroutine takes as input a B<type> value which names the type of object to update (e.g. Account, User).  It also takes a B<key> value which specificies the unique key Salesforce should use to determine if it needs to update or insert.  If B<key> is not given it will default to 'Id' which is Salesforces own internal unique ID.  This key can be any of Salesforces default fields or an custom field marked as an external key.
+
+Finally, this method takes one or more perl HASH references containing the fields (the keys of the hash) and the values of the record that will be updated.
 
 =item getServerTimestamp()
 
@@ -1083,6 +1155,9 @@ Chase Whitener <cwhitener at gmail dot com>
 
 Thanks to:
 
+Garth Webb - 
+Finding and fixing bugs. Adding some additional features and more constant types.
+
 Ron Hess -
 Finding and fixing bugs. Adding some additional features. Adding more tests
 to the build. Providing a lot of other help.
@@ -1100,5 +1175,6 @@ Byrne Reese wrote the original Salesforce module.
 =head1 COPYRIGHT
 
 Copyright 2003-2004 Byrne Reese, Chase Whitener. All rights reserved.
+
 =cut
 
