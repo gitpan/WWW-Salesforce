@@ -22,7 +22,7 @@ package WWW::Salesforce::Deserializer;
 
     BEGIN {
         use vars qw($XSD_NSPREFIX $XSI_NSPREFIX $SOAPENV_NSPREFIX 
-	      $SOAPENC_NSPREFIX $NSPREFIX);
+          $SOAPENC_NSPREFIX $NSPREFIX);
 
         $XSD_NSPREFIX="xsd";
         $XSI_NSPREFIX="xsi";
@@ -79,7 +79,7 @@ END_OF_SUB
             }
             else {
                 my $cmd = '$self->as_'.$type.'(1, $name, $attr, @$value, $ns );';
-                #	    print STDERR $cmd . "\n";
+                #        print STDERR $cmd . "\n";
                 $result = eval $cmd;
             }
             push (@Array, $result);

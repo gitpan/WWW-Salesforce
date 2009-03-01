@@ -6,7 +6,7 @@ package WWW::Salesforce;
     use Carp;
 
     use SOAP::Lite;# ( +trace => 'all', readable => 1, );#, outputxml => 1, );
-    use Data::Dumper;
+    #use Data::Dumper;
     use WWW::Salesforce::Constants;
     use WWW::Salesforce::Deserializer;
     use WWW::Salesforce::Serializer;
@@ -15,7 +15,7 @@ package WWW::Salesforce;
         $VERSION $SF_URI $SF_PREFIX $SF_PROXY $SF_SOBJECT_URI
     );
 
-    $VERSION = '0.090';
+    $VERSION = '0.10';
 
     $SF_PROXY = 'https://www.salesforce.com/services/Soap/u/8.0';
     $SF_URI = 'urn:partner.soap.sforce.com';
@@ -737,38 +737,37 @@ package WWW::Salesforce;
         my %tmp = ();
         my @sobjects = @_;
         if (ref $sobjects[0] ne 'HASH') { 
-        	%tmp = @_;
-        	@sobjects = (\%tmp);  # create an array of one
+            %tmp = @_;
+            @sobjects = (\%tmp);  # create an array of one
         }
 
         my @updates; 
         foreach ( @sobjects ) {  # arg list is now an array of hash refs
-        	my %in = %{$_}; 
-        	        
-	        my $id = $in{'id'};
-	        delete($in{'id'});
-	        if ( !$id ) {
-	            carp( "Expected a hash with key 'id'" );
-	            return 0;
-	        }
+            my %in = %{$_}; 
+                    
+            my $id = $in{'id'};
+            delete($in{'id'});
+            if ( !$id ) {
+                carp( "Expected a hash with key 'id'" );
+                return 0;
+            }
         
-	        my @elems;
-	        push @elems,
-	            SOAP::Data
-	                ->prefix( $SF_PREFIX )
-	                ->name( 'Id' => $id )
-	                ->type( 'sforce:ID' );
-	        foreach my $key (keys %in) {
-	            push @elems,
-	                SOAP::Data
-	                    ->prefix( $SF_PREFIX )
-	                    ->name( $key => $in{$key} )
+            my @elems;
+            push @elems,
+                SOAP::Data
+                    ->prefix( $SF_PREFIX )
+                    ->name( 'Id' => $id )
+                    ->type( 'sforce:ID' );
+            foreach my $key (keys %in) {
+                push @elems,
+                    SOAP::Data
+                        ->prefix( $SF_PREFIX )
+                        ->name( $key => $in{$key} )
                         ->type( WWW::Salesforce::Constants->type($type, $key) );
-	                    #->type( $WWW::Salesforce::Constants::TYPES{$type}->{$key} );
-	        }
-	        push @updates, SOAP::Data 
-	        	->name('sObjects' => \SOAP::Data->value(@elems))
-		  		->attr( { 'xsi:type' => 'sforce:'.$type } ); 			
+            }
+            push @updates, SOAP::Data 
+                ->name('sObjects' => \SOAP::Data->value(@elems))
+                  ->attr( { 'xsi:type' => 'sforce:'.$type } );             
         }
         
         my $client = $self->get_client(1);
@@ -806,31 +805,31 @@ package WWW::Salesforce;
 
         my %tmp = ();
         if (ref $sobjects[0] ne 'HASH') {
-        	%tmp = @_;
-        	@sobjects = (\%tmp);  # create an array of one
+            %tmp = @_;
+            @sobjects = (\%tmp);  # create an array of one
         }
 
         my @updates = (
              SOAP::Data
-	           ->prefix( $SF_PREFIX )
+               ->prefix( $SF_PREFIX )
                ->name('externalIDFieldName' => $name)
                ->attr({'xsi:type' => 'xsd:string'})
         );
 
         foreach (@sobjects) {  # arg list is now an array of hash refs
-        	my %in = %{$_};
+            my %in = %{$_};
 
-	        my @elems;
-	        foreach my $key (keys %in) {
-	            push @elems,
-	                SOAP::Data    
-	                    ->prefix( $SF_PREFIX )
-	                    ->name( $key => $in{$key} )
-	                    ->type( WWW::Salesforce::Constants->type($type, $key) );
-	        }
-	        push @updates, SOAP::Data
-	        	->name('sObjects' => \SOAP::Data->value(@elems))
-		  		->attr( { 'xsi:type' => 'sforce:'.$type } );
+            my @elems;
+            foreach my $key (keys %in) {
+                push @elems,
+                    SOAP::Data    
+                        ->prefix( $SF_PREFIX )
+                        ->name( $key => $in{$key} )
+                        ->type( WWW::Salesforce::Constants->type($type, $key) );
+            }
+            push @updates, SOAP::Data
+                ->name('sObjects' => \SOAP::Data->value(@elems))
+                ->attr( { 'xsi:type' => 'sforce:'.$type } );
         }
 
         my $client = $self->get_client(1);
@@ -858,7 +857,7 @@ __END__
 =pod
 =head1 NAME
 
-WWW::Salesforce v0.090 - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
+WWW::Salesforce - this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
 
 =head1 SYNOPSIS
 

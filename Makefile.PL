@@ -1,5 +1,6 @@
 use 5.008001;
 use ExtUtils::MakeMaker;
+exit 0 if $ENV{AUTOMATED_TESTING};
 
 my $SFDC_CONFIG_FILE = "t/sfdc.cfg";
 
@@ -11,6 +12,8 @@ Several tests need to be run in order to test the Salesforce Perl module.
 You MUST supply a Saleforce username and password in order to proceed.
 
 All tests will fail if you do not provide a valid username and password.
+For this reason, all automated testing will fail.
+
 This username and password combination is used ONLY for testing purposes.
 
 END
@@ -34,4 +37,7 @@ WriteMakefile(
         'Crypt::SSLeay' => 0.56,
         'SOAP::Lite'    => 0.68,
     }, # e.g., Module::Name => 1.1
+    ABSTRACT_FROM => 'lib/WWW/Salesforce.pm',
+    AUTHOR => 'Chase Whitener <cwhitener@gmail.com>',
+    LICENSE => 'perl',
 );

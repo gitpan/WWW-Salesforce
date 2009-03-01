@@ -9,3 +9,4 @@ lib/WWW/Salesforce/Serializer.pm
 lib/WWW/Salesforce/Simple.pm
 t/WWW-Salesforce.t
 t/sfdc.cfg
+META.yml                                 Module meta-data (added by MakeMaker)

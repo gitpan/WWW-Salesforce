@@ -8,7 +8,7 @@ package WWW::Salesforce::Simple;
 
     #handle versioning and exporting
     use vars qw( $VERSION );
-    $VERSION = '0.093';
+    $VERSION = '0.10';
 
     #**************************************************************************
     # new( %params ) ------CONSTRUCTOR
@@ -113,12 +113,13 @@ package WWW::Salesforce::Simple;
 } #end of package scope
 
 1; #magically delicious
+__END__
 
 =pod
 
 =head1 NAME
 
-WWW::Salesforce::Simple.pm v0.092 - this class provides a simpler abstraction layer between WWW::Salesforce and Salesforce.com.
+WWW::Salesforce::Simple.pm - this class provides a simpler abstraction layer between WWW::Salesforce and Salesforce.com.
 
 =head1 DESCRIPTION
 
