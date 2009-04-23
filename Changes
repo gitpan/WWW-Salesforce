@@ -1,5 +1,9 @@
 Revision history for Perl extension WWW::Salesforce.
 
+0.11 Thurs April 23 15:00:00 2009
+    - Fixed a problem with some documentation and code discrepencies (thanks to Michael Blanco)
+    - Fixed a small code problem in the retrieve function
+    
 0.10 Sun March 1 04:30:00  2009
     - fixed the Makefile to disable automated tests since they'll fail for lack of user/pass
     - Added META.yml

@@ -15,7 +15,7 @@ package WWW::Salesforce;
         $VERSION $SF_URI $SF_PREFIX $SF_PROXY $SF_SOBJECT_URI
     );
 
-    $VERSION = '0.10';
+    $VERSION = '0.11';
 
     $SF_PROXY = 'https://www.salesforce.com/services/Soap/u/8.0';
     $SF_URI = 'urn:partner.soap.sforce.com';
@@ -103,7 +103,6 @@ package WWW::Salesforce;
             push @elems, SOAP::Data->prefix('sfons')
                 ->name($key => $in{$key})
                 ->type( WWW::Salesforce::Constants->type($type, $key) );
-#                ->type($WWW::Salesforce::Constants::TYPES{$type}->{$key});
         }
 
         my $r = $client->call(
@@ -611,8 +610,8 @@ package WWW::Salesforce;
             carp( "Hash with key 'fields' expected." );
             return 0;
         }
-        if ( !defined $in{'fields'} || !length $in{'fields'} ) {
-            carp( "Hash with key 'fields' expected." );
+        if ( !defined $in{'ids'} || !length $in{'ids'} ) {
+            carp( "Hash with key 'ids' expected." );
             return 0;
         }
         if ( !defined $in{'type'} || !length $in{'type'} ) {
@@ -1093,9 +1092,9 @@ A comma delimitted list of field name you want retrieved.
 
 The type of the object being queried.
 
-=item id
+=item ids
 
-The id of the object you want returned.
+The ids (LIST) of the object you want returned.
 
 =back
 
@@ -1153,6 +1152,9 @@ Not enough test cases built into the install yet.  More to be added.
 Chase Whitener <cwhitener at gmail dot com>
 
 Thanks to:
+
+Michael Blanco -
+Finding and fixing some bugs.
 
 Garth Webb - 
 Finding and fixing bugs. Adding some additional features and more constant types.
