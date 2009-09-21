@@ -5,7 +5,7 @@ WWW-Salesforce
 # Salesforce dot com Perl Module
 # Author: Byrne Reese <byrne at majordojo dot com>
 #           Chase Whitener <cwhitener at gmail dot com>
-# Last Updated - Feb 12, 2007
+# Last Updated - Sept 18, 2009
 #
 
 The following Perl module is to facilitate communication with the
@@ -54,18 +54,13 @@ DEPENDENCIES
 
 This module requires these other modules and libraries:
 
+  Moose
   SOAP::Lite
   Crypt::SSLeay
 
 WHAT WORKS
 
-Almost all 8.0 API calls now work.
-
-WHAT DOESN'T WORK (a.k.a. TO DO)
-
-* describeSObjects API call. - array version of describeSObject
-
-* need to add more tests
+Almost all 16.0 API calls now work.
 
 ABOUT THE AUTHOR
 

@@ -1,5 +1,16 @@
 Revision history for Perl extension WWW::Salesforce.
 
+0.200_1 Fri Sept 18 15:00:00 2009
+    - First release candidate for version 0.2
+    - A LOT CHANGED!!!
+    - Now using Moose!
+    - ->new() creates a new object but DOES NOT LOGIN!
+    - ->login() must now be called before doing anything else and after ->new()
+    - ->errstr() added.  All errors now go there!
+    - ->logout() method added
+    - Documentation updated accordingly
+    - MANY errors will remain
+
 0.11 Thurs April 23 15:00:00 2009
     - Fixed a problem with some documentation and code discrepencies (thanks to Michael Blanco)
     - Fixed a small code problem in the retrieve function
