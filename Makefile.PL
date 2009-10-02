@@ -12,6 +12,7 @@ WriteMakefile(
     VERSION_FROM      => 'lib/WWW/Salesforce.pm', # finds $VERSION
     PREREQ_PM         => {
 		'Moose'			=> 0.86,
+		'Moose::Util::TypeConstraints' => 0.86,
         'Crypt::SSLeay' => 0.56,
         'SOAP::Lite'    => 0.68,
     }, # e.g., Module::Name => 1.1

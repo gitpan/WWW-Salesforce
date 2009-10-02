@@ -1,5 +1,21 @@
 Revision history for Perl extension WWW::Salesforce.
 
+0.200_1 Fri Oct 2 15:00:00 2009
+    - Second thingy for version 0.2
+    - A LOT CHANGED!!!
+    - Following the Salesforce Documentation a lot more closely
+    - Added WWW::Salesforce::SObject
+    - Added WWW::Salesforce::Error
+    - Added WWW::Salesforce::GetUserInfoResult
+    - Added WWW::Salesforce::LeadConvert
+    - Added WWW::Salesforce::LeadConvertResult
+    - Changed login() to no longer accept a hash
+    - Changed setPassword() to no longer accept a hash
+    - Cleaned up documentation
+    - Added more examples to the documentation
+    - Fixed bug in logout()
+    - Added more links in documentation to reference material
+
 0.200_1 Fri Sept 18 15:00:00 2009
     - First release candidate for version 0.2
     - A LOT CHANGED!!!

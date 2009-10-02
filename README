@@ -5,7 +5,7 @@ WWW-Salesforce
 # Salesforce dot com Perl Module
 # Author: Byrne Reese <byrne at majordojo dot com>
 #           Chase Whitener <cwhitener at gmail dot com>
-# Last Updated - Sept 18, 2009
+# Last Updated - October 2, 2009
 #
 
 The following Perl module is to facilitate communication with the
@@ -55,6 +55,7 @@ DEPENDENCIES
 This module requires these other modules and libraries:
 
   Moose
+  Moose::Util::TypeConstraints
   SOAP::Lite
   Crypt::SSLeay
 
