@@ -1,31 +1,16 @@
 Revision history for Perl extension WWW::Salesforce.
 
-0.200_1 Fri Oct 2 15:00:00 2009
-    - Second thingy for version 0.2
-    - A LOT CHANGED!!!
-    - Following the Salesforce Documentation a lot more closely
-    - Added WWW::Salesforce::SObject
-    - Added WWW::Salesforce::Error
-    - Added WWW::Salesforce::GetUserInfoResult
-    - Added WWW::Salesforce::LeadConvert
-    - Added WWW::Salesforce::LeadConvertResult
-    - Changed login() to no longer accept a hash
-    - Changed setPassword() to no longer accept a hash
-    - Cleaned up documentation
-    - Added more examples to the documentation
-    - Fixed bug in logout()
-    - Added more links in documentation to reference material
-
-0.200_1 Fri Sept 18 15:00:00 2009
-    - First release candidate for version 0.2
-    - A LOT CHANGED!!!
-    - Now using Moose!
-    - ->new() creates a new object but DOES NOT LOGIN!
-    - ->login() must now be called before doing anything else and after ->new()
-    - ->errstr() added.  All errors now go there!
-    - ->logout() method added
-    - Documentation updated accordingly
-    - MANY errors will remain
+0.12 Tue Aug 17 19:34:00 2010 PST
+    - New maintainer PHRED
+    - Thanks to Mark Stosberg for several patches for this version
+    - Die with an error string instead of carping and returning
+    - Skip tests in automated testing mode
+    - Skip tests unless user, pass, and sectoken environment vars set
+    - Fix failing test - base64binary => base64Binary namespace change
+    - Perltidy file contents and remove unnecessary package scope braces
+    - Handle undefined return values from SOAP client
+    - Fix Type => type doc error in create()
+    - Add describeSObjects method [tom@eborcom.com]
 
 0.11 Thurs April 23 15:00:00 2009
     - Fixed a problem with some documentation and code discrepencies (thanks to Michael Blanco)

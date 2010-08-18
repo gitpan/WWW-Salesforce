@@ -1,7 +1,7 @@
 --- #YAML:1.0
 name:               WWW-Salesforce
-version:            0.200_2
-abstract:           this class provides a simple abstraction layer between L<SOAP::Lite|SOAP::Lite> and <http://www.salesforce.com|Salesforce.com>.
+version:            0.12
+abstract:           this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
 author:
     - Chase Whitener <cwhitener@gmail.com>
 license:            perl
@@ -11,15 +11,13 @@ configure_requires:
 build_requires:
     ExtUtils::MakeMaker:  0
 requires:
-    Crypt::SSLeay:        0.56
-    Moose:                0.86
-    Moose::Util::TypeConstraints:  0.86
-    SOAP::Lite:           0.68
+    Crypt::SSLeay:  0.56
+    SOAP::Lite:     0.68
 no_index:
     directory:
         - t
         - inc
-generated_by:       ExtUtils::MakeMaker version 6.55_02
+generated_by:       ExtUtils::MakeMaker version 6.56
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
     version:  1.4

@@ -4,13 +4,8 @@ MANIFEST
 README
 lib/WWW/Salesforce.pm
 lib/WWW/Salesforce/Constants.pm
-lib/WWW/Salesforce/Error.pm
-lib/WWW/Salesforce/GetUserInfoResult.pm
-lib/WWW/Salesforce/LeadConvert.pm
-lib/WWW/Salesforce/LeadConvertResult.pm
-lib/WWW/Salesforce/partner.wsdl
+lib/WWW/Salesforce/Deserializer.pm
 lib/WWW/Salesforce/Serializer.pm
-lib/WWW/Salesforce/SObject.pm
-
+lib/WWW/Salesforce/Simple.pm
 t/WWW-Salesforce.t
 META.yml                                 Module meta-data (added by MakeMaker)
