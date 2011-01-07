@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               WWW-Salesforce
-version:            0.13
+version:            0.14
 abstract:           this class provides a simple abstraction layer between SOAP::Lite and Salesforce.com.
 author:
     - Chase Whitener <cwhitener@gmail.com>
