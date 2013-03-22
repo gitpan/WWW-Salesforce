@@ -15,7 +15,7 @@ use vars qw(
   $VERSION $SF_URI $SF_PREFIX $SF_PROXY $SF_SOBJECT_URI $SF_URIM $SF_APIVERSION
 );
 
-$VERSION = '0.17';
+$VERSION = '0.18';
 
 $SF_PROXY       = 'https://www.salesforce.com/services/Soap/u/8.0';
 $SF_URI         = 'urn:partner.soap.sforce.com';
@@ -170,6 +170,28 @@ sub describeGlobal {
     if ( $r->fault() ) {
         die( $r->faultstring() );
     }
+    return $r;
+}
+
+#**************************************************************************
+# logout()     -- API
+#   -- Ends the session for the logged-in user issuing the call. No arguments are needed.
+#   Useful to avoid hitting the limit of ten open sessions per login.
+#   http://www.salesforce.com/us/developer/docs/api/Content/sforce_api_calls_logout.htm
+#**************************************************************************
+sub logout {
+    my $self = shift;
+    
+    my $client = $self->get_client(1);
+    my $method =
+      SOAP::Data->name("logout")->prefix($SF_PREFIX)->uri($SF_URI);
+    my $r = $client->call( $method, $self->get_session_header() );
+    unless ($r) {
+        die "could not call method $method";
+    }    
+    if ( $r->fault() ) {
+        die( $r->faultstring() );
+    }    
     return $r;
 }
 
