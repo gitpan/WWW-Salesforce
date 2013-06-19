@@ -20,4 +20,4 @@ no_index:
 requires:
   Crypt::SSLeay: 0.56
   SOAP::Lite: 0.68
-version: 0.19
+version: 0.20
