@@ -20,4 +20,4 @@ requires:
   SOAP::Lite: 0.68
 resources:
   repository: https://github.com/redhotpenguin/WWW-Salesforce.git
-version: 0.21
+version: 0.22
